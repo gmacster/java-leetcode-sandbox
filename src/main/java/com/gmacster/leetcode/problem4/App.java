@@ -10,27 +10,35 @@ public class App {
     public static void main(String[] args) {
         App app = new App();
 
-        int[] first = new int[] {3, 1};
-        int[] second = new int[] {2, 4, 5};
+        int[] first = new int[] {1};
+        int[] second = new int[] {1};
 
         System.out.println(app.findMedianSortedArrays(first, second));
     }
 
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         
-        // merge the two
         Integer[] combined = new Integer[nums1.length + nums2.length];
-        
-        for (int i = 0; i < nums1.length; i++) {
-            insertSorted(combined, nums1[i]);
+
+        int rightIndex = 0;
+        int leftIndex = 0;
+
+        while (leftIndex < nums1.length) {
+            int left = nums1[leftIndex];
+
+            int right;
+            while (rightIndex < nums2.length && (right = nums2[rightIndex]) < left) {
+                combined[leftIndex + rightIndex] = right;
+                rightIndex++;
+            }
+
+            combined[leftIndex + rightIndex] = left;
+            leftIndex++;
         }
 
-        for (int i = 0; i < nums2.length; i++) {
-            insertSorted(combined, nums2[i]);
-        }
-
-        for (int i = 0; i < combined.length; i++) {
-            System.out.println(combined[i]);
+        while (rightIndex < nums2.length) {
+            combined[leftIndex + rightIndex] = nums2[rightIndex];
+            rightIndex++;
         }
 
         if (combined.length % 2 == 0) {
@@ -39,26 +47,5 @@ public class App {
         } else {
             return combined[combined.length / 2];
         }
-    }
-
-    private void insertSorted(Integer[] destination, int value) {
-        
-        int i = 0;
-        int targetIndex = 0;
-
-        while (i < destination.length && destination[i] != null && value > destination[i]) {
-            i++;
-        }
-
-        targetIndex = i;
-
-        i = destination.length - 1;
-
-        while (i > targetIndex) {
-            destination[i] = destination[i - 1];
-            i--;
-        }
-
-        destination[targetIndex] = value;
     }
 }
